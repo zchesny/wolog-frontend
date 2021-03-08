@@ -13,8 +13,34 @@ const USERS_URL = `${BASE_URL}/users`
 const WORKOUTS_URL = `${BASE_URL}/workouts`
 const TEAMS_URL = `${BASE_URL}/teams`
 document.addEventListener("DOMContentLoaded", () => {
+    renderUserForm(); 
     loadUsers(); 
 })
+
+function renderUserForm() {
+    let addToy = false; 
+    const addBtn = document.querySelector("#show-user-form-btn");
+    const toyFormContainer = document.querySelector(".container");
+    addBtn.addEventListener("click", () => {
+      // hide & seek with the form
+      addToy = !addToy;
+      if (addToy) {
+        toyFormContainer.style.display = "block";
+      } else {
+        toyFormContainer.style.display = "none";
+      }
+    })
+
+    const registerBtn = document.querySelector("#new-user-btn"); 
+    registerBtn.addEventListener('click', newUser); 
+}
+
+function newUser(event) {
+    event.preventDefault(); 
+    const name = document.querySelector('.add-user-form').name.value; 
+    const password = document.querySelector('.add-toy-form').password.value; 
+    const image = document.querySelector('.add-user-form').image.value; 
+}
 
 function loadUsers() {
     fetch(USERS_URL)
