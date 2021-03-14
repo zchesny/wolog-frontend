@@ -1,6 +1,3 @@
-console.log("testing...")
-
-
 // test that we can get data from the backend
 // const BACKEND_URL = 'http://localhost:3000';
 // fetch(`${BACKEND_URL}/test`)
@@ -37,9 +34,49 @@ function renderUserForm() {
 
 function newUser(event) {
     event.preventDefault(); 
-    const name = document.querySelector('.add-user-form').name.value; 
-    const password = document.querySelector('.add-toy-form').password.value; 
-    const image = document.querySelector('.add-user-form').image.value; 
+    // gather form data
+    const name = document.getElementById('user-name').value; 
+    const password = document.getElementById('user-password').value; 
+    const image = document.getElementById('user-image').value; 
+
+    console.log('user data from form'); 
+    console.log(name);
+    console.log(password); 
+    console.log(image); 
+
+    // clear form
+    // document.getElementById('user-name').value = ''; 
+    // document.getElementById('user-password').value = ''; 
+    // document.getElementById('user-image').value = ''; 
+
+    let userData = {
+      "user": {
+        name, 
+        password, 
+        image
+      }
+    };
+
+    console.log('user data json'); 
+    console.log(userData); 
+
+    let configObj = {
+      method: "POST", 
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }, 
+      body: JSON.stringify(userData)
+    };
+
+    console.log('config object'); 
+    console.log(configObj); 
+
+    return fetch(USERS_URL, configObj)
+      .then(resp => resp.json())
+      .then(json => renderCard(json));
+      //.catch(error => alert(error.message));
+
 }
 
 function loadUsers() {
