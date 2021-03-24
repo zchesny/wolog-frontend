@@ -9,73 +9,142 @@ const BASE_URL = "http://localhost:3000"
 const USERS_URL = `${BASE_URL}/users`
 const WORKOUTS_URL = `${BASE_URL}/workouts`
 const TEAMS_URL = `${BASE_URL}/teams`
+
+// DOCUMENT FUNCTIONS ------------------------
 document.addEventListener("DOMContentLoaded", () => {
-    renderUserForm(); 
+    renderForm("new-user", newUser);
+    renderForm("new-lineup");
+    // renderUserForm(); 
+    // renderLineupForm();
     loadUsers(); 
 })
 
-function renderUserForm() {
-    let addToy = false; 
-    const addBtn = document.querySelector("#show-user-form-btn");
-    const toyFormContainer = document.querySelector(".container");
-    addBtn.addEventListener("click", () => {
-      // hide & seek with the form
-      addToy = !addToy;
-      if (addToy) {
-        toyFormContainer.style.display = "block";
-      } else {
-        toyFormContainer.style.display = "none";
-      }
-    })
-
-    const registerBtn = document.querySelector("#new-user-btn"); 
-    registerBtn.addEventListener('click', newUser); 
+function renderForm(formName, newFunction) {
+  let addUser = false; 
+  const addBtn = document.querySelector(`#show-${formName}-form-btn`);
+  const formContainer = document.querySelector(`#${formName}-form-container`);
+  addBtn.addEventListener("click", () => {
+    // hide & seek with the form
+    addUser = !addUser;
+    if (addUser) {
+      formContainer.style.display = "block";
+    } else {
+      formContainer.style.display = "none";
+    }
+  })
+  const submitBtn = document.querySelector(`#${formName}-btn`); 
+  submitBtn.addEventListener('click', newFunction); 
+  // maybe need to add event listener to selecting an item from the radio 
+  if (formName == "new-lineup") {
+    // render roster to right 
+    renderRoster(); 
+    // get value from radio 
+    console.log('new lineup form');
+    document.querySelectorAll('input[name="capacity"]').forEach((elem) => {
+      elem.addEventListener("click", renderBoatForm);
+    });
+  }
 }
 
+function renderRoster() {
+
+}
+
+function renderBoatForm(event) {
+  const count = event.target.value;
+  console.log(count);
+  let newLineup = document.getElementById('current-new-lineup');
+  // future: add logic to just add the number of cells needed instead of creating a new table 
+  if (newLineup) {
+    newLineup.remove(); 
+  }
+  const form = document.querySelector('#new-lineup-form'); 
+  const table = document.createElement('table'); 
+  table.id = "current-new-lineup"
+  form.appendChild(table);
+  if (count >= 10) {
+    for (let i = 0; i < count/2; i++) {
+      const row = document.createElement('tr');
+      let data = document.createElement('td');
+      data.innerHTML = "paddler holder"; 
+      const data2 = document.createElement('td');
+      data2.innerHTML = "paddler holder"; 
+      row.appendChild(data);
+      row.appendChild(data2);
+      table.appendChild(row); 
+    }
+  }
+  else {
+    for (let i = 0; i < count; i++) {
+      const row = document.createElement('tr');
+      let data = document.createElement('td');
+      data.innerHTML = "paddler holder"; 
+      row.appendChild(data);
+      table.appendChild(row); 
+    }
+  }
+}
+
+function allowDrop(event) {
+  event.preventDefault(); 
+}
+
+function drag(event) {
+  event.dataTransfer.setData("text", event.target.id);
+}
+
+function drop(event) {
+  event.preventDefault();
+  let data = event.dataTransfer.getData("text");
+  event.target.appendChild(document.getElementById(data));
+}
+
+
+// USER FUNCTIONS --------------------------
 function newUser(event) {
-    event.preventDefault(); 
-    // gather form data
-    const name = document.getElementById('user-name').value; 
-    const password = document.getElementById('user-password').value; 
-    const image = document.getElementById('user-image').value; 
+  event.preventDefault(); 
+  // gather form data
+  const name = document.getElementById('user-name').value; 
+  const password = document.getElementById('user-password').value; 
+  const image = document.getElementById('user-image').value; 
 
-    console.log('user data from form'); 
-    console.log(name);
-    console.log(password); 
-    console.log(image); 
+  console.log('user data from form'); 
+  console.log(name);
+  console.log(password); 
+  console.log(image); 
 
-    // clear form
-    // document.getElementById('user-name').value = ''; 
-    // document.getElementById('user-password').value = ''; 
-    // document.getElementById('user-image').value = ''; 
+  // clear form
+  document.getElementById('user-name').value = ''; 
+  document.getElementById('user-password').value = ''; 
+  document.getElementById('user-image').value = ''; 
 
-    let userData = {
-      "user": {
-        name, 
-        password, 
-        image
-      }
-    };
+  let userData = {
+    "user": {
+      name, 
+      password, 
+      image
+    }
+  };
 
-    console.log('user data json'); 
-    console.log(userData); 
+  console.log('user data json'); 
+  console.log(userData); 
 
-    let configObj = {
-      method: "POST", 
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      }, 
-      body: JSON.stringify(userData)
-    };
+  let configObj = {
+    method: "POST", 
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    }, 
+    body: JSON.stringify(userData)
+  };
 
-    console.log('config object'); 
-    console.log(configObj); 
+  console.log('config object'); 
+  console.log(configObj); 
 
-    return fetch(USERS_URL, configObj)
-      .then(resp => resp.json())
-      .then(json => renderCard(json));
-      //.catch(error => alert(error.message));
+  return fetch(USERS_URL, configObj)
+    .then(resp => resp.json())
+    .then(json => renderCard(json));
+    //.catch(error => alert(error.message));
 
 }
 
@@ -108,4 +177,23 @@ function renderCard(user) {
 
     main.appendChild(card); 
     card.appendChild(userName); 
+}
+
+function renderCardOld(user) {
+  const main = document.getElementsByTagName('main')[0]; 
+  const user_id = user.id; 
+
+  const card = document.createElement('div'); 
+  card.className = 'card'; 
+  card.dataset.id = user_id; 
+
+  const userName = document.createElement('p'); 
+  userName.innerText = user.name; 
+
+  const viewWosBtn = document.createElement('button'); 
+  viewWosBtn.dataset.id = user_id; 
+  viewWosBtn.innerText = 'View Workouts'; 
+
+  main.appendChild(card); 
+  card.appendChild(userName); 
 }

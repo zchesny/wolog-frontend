@@ -10,8 +10,14 @@
           <h2>Users</h2>
       </header>
 
-      <div class="container">
-        <form class="add-user-form">
+      <p style="text-align:center">
+        Show Forms:
+        <button id="show-new-user-form-btn">New User</button>
+        <button id="show-new-lineup-form-btn">New Lineup</button>
+      </p>
+
+      <div class="parent-container", id="new-user-form-container">
+        <form class="new-user-form">
           <h3>Please enter your registration info:</h3>
   
           <input
@@ -50,11 +56,78 @@
         </form>
       </div>
 
-      <p style="text-align:center">
-        New to wolog? <button id="show-user-form-btn">Register Here!</button>
-      </p>
+      <div class="parent-container", id="new-lineup-form-container">
+        <div class=child-container>
+          <div class="grandchild-container">
+            <form class="new-lineup-form", id="new-lineup-form">
+              <h2>Lineup Info</h2>
+      
+              <input
+                type="text"
+                name="name"
+                value=""
+                placeholder="Lineup Name"
+                id = "lineup-name"
+                class="input-text"
+              />
+              <br />
+              <input
+                type="text"
+                name="description"
+                value=""
+                placeholder="Lineup Description (Optional)"
+                id = "lineup-description"
+                class="input-text"
+              />
+              <br />
+              Number of Paddlers
+              <input type="radio" id="20" name="capacity" value=20>
+              <label for="20">20</label>
+              <input type="radio" id="10" name="capacity" value=10>
+              <label for="10">10</label>
+              <input type="radio" id="6" name="capacity" value=6>
+              <label for="6">6</label>
+              <input type="radio" id="2" name="capacity" value=2>
+              <label for="2">2</label>
+              <input type="radio" id="1" name="capacity" value=1>
+              <label for="1">1</label>
+              <br />
+              <input
+                type="submit"
+                name="submit"
+                value="Save"
+                class="submit"
+                id="new-lineup-btn"
+              />
+            </form>
+          </div>
+          <div class="grandchild-container">
+            <h2>Roster</h2>
+          </div>
+        </div>
+      </div>
 
       <main>
+
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Courses</th>
+            <th>First Created</th>
+            <th>Last Updated</th>
+            <th>Attendance</th>
+            <th>User Options</th>
+        </tr>
+        <tr>
+          <td>HI</td>
+          <td>HI</td>
+          <td>HI</td>
+        </tr>
+        <tr>
+
+        </tr>
+        </table>
 
       </main>
    <script type="application/javascript" src="src/index.js" charset="UTF-8"></script>

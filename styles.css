@@ -86,7 +86,7 @@ body {
     }
   }
   
-  .container {
+  .parent-container {
     padding: 1rem;
     width: stretch;
     height: auto;
@@ -94,10 +94,18 @@ body {
     background: #515DA2;
     opacity: .8;
   }
-  
-  .add-toy-form {
-    width: 80%
+
+  div.child-container{
+    display: flex; 
   }
+
+  div.grandchild-container{
+    display: 1; 
+  }
+  
+  /* .add-toy-form {
+    width: 80%
+  } */
   
   .submit {
     position: relative;
@@ -118,7 +126,6 @@ body {
     color: #e04b52;
   }
   
-  
   .input-text {
     border-radius: 5px;
     height: 2rem;
@@ -126,5 +133,18 @@ body {
     font-size: 18px;
     font-family: monospace;
     margin: 3px;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  th, td { 
+    padding: 10px;
+  }
+
+  table, th, td {
+    border: 1px solid black;
+    text-align: left;
   }
   
