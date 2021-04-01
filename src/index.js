@@ -47,7 +47,7 @@ function renderForm(formName, newFunction) {
 }
 
 function renderRoster() {
-
+  rosterTable = document.getElementById('roster-table');
 }
 
 function renderBoatForm(event) {
@@ -65,10 +65,8 @@ function renderBoatForm(event) {
   if (count >= 10) {
     for (let i = 0; i < count/2; i++) {
       const row = document.createElement('tr');
-      let data = document.createElement('td');
-      data.innerHTML = "paddler holder"; 
-      const data2 = document.createElement('td');
-      data2.innerHTML = "paddler holder"; 
+      let data = createPaddlerEntry(); 
+      let data2 = createPaddlerEntry(); 
       row.appendChild(data);
       row.appendChild(data2);
       table.appendChild(row); 
@@ -77,12 +75,19 @@ function renderBoatForm(event) {
   else {
     for (let i = 0; i < count; i++) {
       const row = document.createElement('tr');
-      let data = document.createElement('td');
-      data.innerHTML = "paddler holder"; 
+      let data = createPaddlerEntry(); 
       row.appendChild(data);
       table.appendChild(row); 
     }
   }
+}
+
+function createPaddlerEntry() {
+  let data = document.createElement('td');
+  data.innerHTML = "paddler holder"; 
+  data.setAttribute('ondrop', 'drop(event)'); 
+  data.setAttribute('ondragover', 'allowDrop(event)');
+  return data;
 }
 
 function allowDrop(event) {
@@ -96,7 +101,7 @@ function drag(event) {
 function drop(event) {
   event.preventDefault();
   let data = event.dataTransfer.getData("text");
-  event.target.appendChild(document.getElementById(data));
+  event.target.appendChild(document.getElementById(data)); 
 }
 
 
@@ -160,13 +165,21 @@ function renderCards(json) {
     })
 }
 
+// fixme: only alllow one element per table entry drop 
 function renderCard(user) {
-    const main = document.getElementsByTagName('main')[0]; 
+    //const main = document.getElementById('roster');
     const user_id = user.id; 
+
+    const rosterTable = document.getElementById('roster-table');
+    const tableRow = document.createElement('tr');
+    const tableData = document.createElement('td');
 
     const card = document.createElement('div'); 
     card.className = 'card'; 
+    card.id = `user_id-${user_id}`
     card.dataset.id = user_id; 
+    card.setAttribute('draggable', true);
+    card.setAttribute('ondragstart', 'drag(event)');
 
     const userName = document.createElement('p'); 
     userName.innerText = user.name; 
@@ -175,7 +188,13 @@ function renderCard(user) {
     viewWosBtn.dataset.id = user_id; 
     viewWosBtn.innerText = 'View Workouts'; 
 
-    main.appendChild(card); 
+    rosterTable.appendChild(tableRow);
+    tableRow.appendChild(tableData);
+    tableData.appendChild(card);
+
+    tableData.setAttribute('ondrop', 'drop(event)'); 
+    tableData.setAttribute('ondragover', 'allowDrop(event)');
+    // main.appendChild(card); 
     card.appendChild(userName); 
 }
 
@@ -196,4 +215,19 @@ function renderCardOld(user) {
 
   main.appendChild(card); 
   card.appendChild(userName); 
+}
+
+function applyFilters() {
+
+}
+
+function setupGenderFilter() {
+  const genderOpts = document.getElementsByClassName('gender-filter');
+  genderOpts.forEach((opt) => {
+    opt.addEventListener("click", filterGender);
+  })
+}
+
+function filterGender() {
+  
 }
