@@ -5,10 +5,10 @@
 //   .then(parsedResponse => console.log(parsedResponse));
 
   // first real data 
-const BASE_URL = "http://localhost:3000"
-const USERS_URL = `${BASE_URL}/users`
-const WORKOUTS_URL = `${BASE_URL}/workouts`
-const TEAMS_URL = `${BASE_URL}/teams`
+// const BASE_URL = "http://localhost:3000"
+// const USERS_URL = `${BASE_URL}/users`
+// const WORKOUTS_URL = `${BASE_URL}/workouts`
+// const TEAMS_URL = `${BASE_URL}/teams`
 
 // DOCUMENT FUNCTIONS ------------------------
 document.addEventListener("DOMContentLoaded", () => {
@@ -16,7 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
     renderForm("new-lineup");
     // renderUserForm(); 
     // renderLineupForm();
-    loadUsers(); 
+    // loadUsers();
+    // User.loadUsers();  
 })
 
 function renderForm(formName, newFunction) {
@@ -153,68 +154,10 @@ function newUser(event) {
 
 }
 
-function loadUsers() {
-    fetch(USERS_URL)
-    .then(resp => resp.json())
-    .then(json => renderCards(json)); 
-}
-
-function renderCards(json) {
-    json.forEach(user => {
-        renderCard(user); 
-    })
-}
-
-// fixme: only alllow one element per table entry drop 
-function renderCard(user) {
-    //const main = document.getElementById('roster');
-    const user_id = user.id; 
-
-    const rosterTable = document.getElementById('roster-table');
-    const tableRow = document.createElement('tr');
-    const tableData = document.createElement('td');
-
-    const card = document.createElement('div'); 
-    card.className = 'card'; 
-    card.id = `user_id-${user_id}`
-    card.dataset.id = user_id; 
-    card.setAttribute('draggable', true);
-    card.setAttribute('ondragstart', 'drag(event)');
-
-    const userName = document.createElement('p'); 
-    userName.innerText = user.name; 
-
-    const viewWosBtn = document.createElement('button'); 
-    viewWosBtn.dataset.id = user_id; 
-    viewWosBtn.innerText = 'View Workouts'; 
-
-    rosterTable.appendChild(tableRow);
-    tableRow.appendChild(tableData);
-    tableData.appendChild(card);
-
-    tableData.setAttribute('ondrop', 'drop(event)'); 
-    tableData.setAttribute('ondragover', 'allowDrop(event)');
-    // main.appendChild(card); 
-    card.appendChild(userName); 
-}
-
-function renderCardOld(user) {
-  const main = document.getElementsByTagName('main')[0]; 
-  const user_id = user.id; 
-
-  const card = document.createElement('div'); 
-  card.className = 'card'; 
-  card.dataset.id = user_id; 
-
-  const userName = document.createElement('p'); 
-  userName.innerText = user.name; 
-
-  const viewWosBtn = document.createElement('button'); 
-  viewWosBtn.dataset.id = user_id; 
-  viewWosBtn.innerText = 'View Workouts'; 
-
-  main.appendChild(card); 
-  card.appendChild(userName); 
+function renderFilteredCards(json, filter, value) {
+  json.forEach(user => {
+      renderCard(user); 
+  })
 }
 
 function applyFilters() {
