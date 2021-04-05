@@ -102,7 +102,12 @@
             </form>
           </div>
           <div class="grandchild-container" id = "roster">
-            <h2>Roster</h2>
+            <button id='filter-btn'>Filter</button>
+            <table id="roster-table">
+            </table>
+          </div>
+          <div class="grandchild-container" id = "roster-filter">
+                        <h2>Roster</h2>
 <!-- gender, age, weight, TT, role, status// show hide filters -->
 <!-- add a clear selections option  -->
             <form id="filter-roster">
@@ -207,10 +212,6 @@
                 id="clear-filters"
               />
             </form>
-
-            <table id="roster-table">
-
-            </table>
           </div>
         </div>
       </div>
@@ -226,6 +227,8 @@
         </table>
 
       </main>
+
+      
   
   
     <script type="application/javascript" src="src/user.js" charset="UTF-8"></script>

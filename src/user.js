@@ -21,6 +21,8 @@ class User {
         // this.contactInfo = userObj.contactInfo; 
         this.renderCard(); 
         User.all.push(this);
+        console.log('pushing here')
+        console.log(User.all.length);
     }
 
     renderCard() {
@@ -32,7 +34,13 @@ class User {
         const tableData = document.createElement('td');
     
         const card = document.createElement('div'); 
-        card.className = 'card'; 
+        if (this.gender == 'male') {
+            card.className = 'card male'; 
+        }
+        else {
+            card.className = 'card female'; 
+        }
+        
         card.id = `user_id-${user_id}`
         card.dataset.id = user_id; 
         card.setAttribute('draggable', true);
@@ -60,6 +68,9 @@ class User {
         // delete users currently in roster table 
         const rosterTable = document.getElementById('roster-table');
         removeAllChildNodes(rosterTable); 
+        users.forEach(user => {
+            user.renderCard(); 
+        })
 
     }
 
@@ -71,12 +82,40 @@ class User {
         }))
     }
 
-    static checkMale(gender) {
-        return gender == 'male'; 
+    // static async fetchUsers() {
+    //     const resp = await fetch(USERS_URL);
+    //     const json = await resp.json();
+    //     await json.forEach(userObj => {
+    //         new User(userObj); 
+    //     })
+    // }
+
+    // static convertJson(json) {
+    //     console.log('json in covertjson');
+    //     console.log(json)
+    //     json.forEach(userObj => {
+    //         new User(userObj); 
+    //     })
+    // }
+
+    // static loadUsers() {
+    //     let json = User.fetchUsers(); 
+    //     console.log('json in load users');
+    //     console.log(json);
+    //     User.convertJson(json); 
+    // }
+
+    static checkMale(user) {
+        return user.gender == 'male'; 
     }
 
-    static filterUsers(key, value) {
-
+    static filteredUsers() {
+        let filteredUsers = User.all.
+            filter(function(user) {return user.gender == "male"}); 
+        console.log('filtered users here:');
+        console.log(filteredUsers); 
+        User.renderCards(filteredUsers);
+        return filteredUsers; 
     }
 
 }
@@ -88,5 +127,6 @@ function removeAllChildNodes(parent) {
 
 document.addEventListener("DOMContentLoaded", () => {
     User.loadUsers();  
-    console.log(User.all);
+    const filterBtn = document.getElementById('filter-btn');
+    filterBtn.addEventListener("click", User.filteredUsers);
 })

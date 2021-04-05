@@ -31,6 +31,15 @@ body {
     padding: 10px;
     border-radius: 10px;
   }
+
+  div.male {
+    background-color: blue;
+  }
+
+  div.female {
+    background-color: pink;
+  }
+
   
   p {
     font-size: 1.5em;
