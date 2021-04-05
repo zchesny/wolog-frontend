@@ -40,7 +40,6 @@ function renderForm(formName, newFunction) {
     // render roster to right 
     renderRoster(); 
     // get value from radio 
-    console.log('new lineup form');
     document.querySelectorAll('input[name="capacity"]').forEach((elem) => {
       elem.addEventListener("click", renderBoatForm);
     });

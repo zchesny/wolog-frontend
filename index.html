@@ -102,32 +102,35 @@
             </form>
           </div>
           <div class="grandchild-container" id = "roster">
+            <h2>Roster</h2>
             <button id='filter-btn'>Filter</button>
+            <button id='filter-btn2'>Filter2</button>
             <table id="roster-table">
             </table>
           </div>
           <div class="grandchild-container" id = "roster-filter">
-                        <h2>Roster</h2>
 <!-- gender, age, weight, TT, role, status// show hide filters -->
 <!-- add a clear selections option  -->
             <form id="filter-roster">
-              <h3>Filter Roster:</h3>
+              <h2>Filters</h2>
               <p># of Lineups</p>
 
               <p>Gender</p>
               
-              <input type="checkbox" id="male" name="male" class="gender-filter">
+              <input type="checkbox" id="male" name="male" class="filter gender">
               <label for="male">M</label>
               
-              <input type="checkbox" id="female" name="female" class="gender-filter">
+              <input type="checkbox" id="female" name="female" class="filter gender">
               <label for="female">F</label>
+
+              <button id='gender-clear'>Clear</button>
 
               <p>Status</p>
               
-              <input type="checkbox" id="active" name="active">
+              <input type="checkbox" id="active" name="active" class="filter status">
               <label for="active">Active</label>
               
-              <input type="checkbox" id="inactive" name="inactive">
+              <input type="checkbox" id="inactive" name="inactive" class="filter status">
               <label for="female">Inactive</label>
 
               <p>Role</p>

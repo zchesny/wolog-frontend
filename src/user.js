@@ -5,6 +5,7 @@ const TEAMS_URL = `${BASE_URL}/teams`
 
 class User {
     static all = []; 
+    static inRoster = [];
 
     constructor(userObj) {
         this.id = userObj.id; 
@@ -21,8 +22,7 @@ class User {
         // this.contactInfo = userObj.contactInfo; 
         this.renderCard(); 
         User.all.push(this);
-        console.log('pushing here')
-        console.log(User.all.length);
+        User.inRoster.push(this);
     }
 
     renderCard() {
@@ -82,43 +82,24 @@ class User {
         }))
     }
 
-    // static async fetchUsers() {
-    //     const resp = await fetch(USERS_URL);
-    //     const json = await resp.json();
-    //     await json.forEach(userObj => {
-    //         new User(userObj); 
-    //     })
-    // }
-
-    // static convertJson(json) {
-    //     console.log('json in covertjson');
-    //     console.log(json)
-    //     json.forEach(userObj => {
-    //         new User(userObj); 
-    //     })
-    // }
-
-    // static loadUsers() {
-    //     let json = User.fetchUsers(); 
-    //     console.log('json in load users');
-    //     console.log(json);
-    //     User.convertJson(json); 
-    // }
-
-    static checkMale(user) {
-        return user.gender == 'male'; 
+    static filterAttributes(user, attribute, value) {
+        return user[attribute] == value; 
     }
 
-    static filteredUsers() {
-        let filteredUsers = User.all.
-            filter(function(user) {return user.gender == "male"}); 
-        console.log('filtered users here:');
-        console.log(filteredUsers); 
+    // when nothing is checked, we remove all filters for this category 
+    // when we hit the corresponding 'clear-filter' button, we remove all filters for this category 
+    static clearCategoryFilter() {
+
+    }
+
+    static filteredUsers(attribute, value) {
+        const filteredUsers = User.inRoster.filter(user => User.filterAttributes(user, attribute, value)); 
         User.renderCards(filteredUsers);
+        User.inRoster = filteredUsers; 
         return filteredUsers; 
     }
-
 }
+
 function removeAllChildNodes(parent) {
     while (parent.firstChild) {
         parent.removeChild(parent.firstChild);
@@ -128,5 +109,32 @@ function removeAllChildNodes(parent) {
 document.addEventListener("DOMContentLoaded", () => {
     User.loadUsers();  
     const filterBtn = document.getElementById('filter-btn');
-    filterBtn.addEventListener("click", User.filteredUsers);
+    // filterBtn.addEventListener("click", function () { User.filteredUsers('gender', 'male') });
+    filterBtn.addEventListener("click", function () { 
+        console.log(this.id)
+        User.filteredUsers('gender', 'male');
+    });
+    const filterChecks = document.getElementsByClassName('filter'); 
+    Array.prototype.forEach.call(filterChecks, function(el) {
+        // Do stuff here
+        // console.log('hello');
+        // console.log(el);
+        el.addEventListener('change', function() {
+            if (this.checked) {
+                const attribute = this.className.split(' ').pop();
+                const value = this.id; 
+                console.log('value here');
+                console.log(value);
+                User.filteredUsers(attribute, value);
+            }
+            
+        });
+        
+    });
+
+
+
+    const genderClear = document.getElementById('gender-clear');
+    genderClear
+
 })
