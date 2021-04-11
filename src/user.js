@@ -29,9 +29,6 @@ class User {
     renderCard() {
         //const main = document.getElementById('roster');
         const user_id = this.id; 
-        console.log('user');
-        console.log(this);
-    
         const rosterTable = document.getElementById('roster-table');
         const tableRow = document.createElement('tr');
         const tableData = document.createElement('td');
@@ -71,8 +68,13 @@ class User {
     
         tableData.setAttribute('ondrop', 'drop(event)'); 
         tableData.setAttribute('ondragover', 'allowDrop(event)');
+        tableData.setAttribute('containsdrop', true);
         // main.appendChild(card); 
         card.appendChild(userName); 
+    }
+
+    static findById(userId) {
+        return User.all.filter(user => user.id == userId );
     }
 
     static renderCards(users) {
@@ -104,13 +106,10 @@ class User {
         // const filterCategories = ['gender', 'status', 'role', 'age', 'weight', 'tt']; 
         // const filterCategories = document.getElementsByClassName('filter');
         filterCategories.forEach(function(category) {
-            console.log('category here1');
-            console.log(category);
             const filters = document.getElementsByClassName(category); 
             const count = filters.length; 
             // get number of checked boxes 
             const numChecked = $(`input.${category}:checked`).length;
-            console.log(numChecked);
             // if all are checked or none are checked, do nothing
             // else, apply the filters 
             const values = []; 
@@ -118,16 +117,13 @@ class User {
                 Array.prototype.forEach.call(filters, function(el) {
                     if (el.checked) {
                         const value = el.id; 
-                        console.log('value here');
-                        console.log(value);
                         values.push(value);
                     }
                 })
                 User.filteredUsers(category, values);
             }
         })
-        // console.log('users in roster');
-        // console.log(User.inRoster);
+        // dont show users already in the current roster
         User.renderCards(User.inRoster);
     }
 
@@ -160,16 +156,12 @@ function removeAllChildNodes(parent) {
 
 document.addEventListener("DOMContentLoaded", () => {
     User.loadUsers();  
-    // const filterBtn = document.getElementById('filter-btn');
-    // // filterBtn.addEventListener("click", function () { User.filteredUsers('gender', 'male') });
-    // filterBtn.addEventListener("click", function () { 
-    //     console.log(this.id)
-    //     User.filteredUsers('gender', 'male');
-    // });
     const filterChecks = document.getElementsByClassName('filter'); 
     Array.prototype.forEach.call(filterChecks, function(el) {
         el.addEventListener('change', User.applyAllFilters);
     });
+    const activeFilter = document.getElementById('active');
+    activeFilter.setAttribute('checked', true);
 
     const genderClear = document.getElementById('gender-clear');
     genderClear

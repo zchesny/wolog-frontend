@@ -14,10 +14,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     renderForm("new-user", newUser);
     renderForm("new-lineup");
-    // renderUserForm(); 
-    // renderLineupForm();
-    // loadUsers();
-    // User.loadUsers();  
 })
 
 function renderForm(formName, newFunction) {
@@ -29,6 +25,9 @@ function renderForm(formName, newFunction) {
     addUser = !addUser;
     if (addUser) {
       formContainer.style.display = "block";
+      console.log('newLineup clicked');
+      User.filteredUsers('status', ['active']);
+      User.renderCards(User.inRoster);
     } else {
       formContainer.style.display = "none";
     }
@@ -87,6 +86,7 @@ function createPaddlerEntry() {
   data.innerHTML = "paddler holder"; 
   data.setAttribute('ondrop', 'drop(event)'); 
   data.setAttribute('ondragover', 'allowDrop(event)');
+  data.setAttribute('containsdrop', false);
   return data;
 }
 
@@ -96,14 +96,21 @@ function allowDrop(event) {
 
 function drag(event) {
   event.dataTransfer.setData("text", event.target.id);
+  // find all the places that element has a parent 
+  const userElement = document.getElementById(event.target.id);
+  const originalContainer = userElement.parentElement; 
+  originalContainer.setAttribute('containsdrop', false); 
 }
 
 function drop(event) {
   event.preventDefault();
-  let data = event.dataTransfer.getData("text");
-  event.target.appendChild(document.getElementById(data)); 
+  const dropTarget = event.target; 
+  if (dropTarget.getAttribute('containsdrop') == 'false') {
+    const data = event.dataTransfer.getData("text");
+    event.target.appendChild(document.getElementById(data)); 
+    dropTarget.setAttribute('containsdrop', true);
+  } 
 }
-
 
 // USER FUNCTIONS --------------------------
 function newUser(event) {
@@ -150,26 +157,4 @@ function newUser(event) {
     .then(resp => resp.json())
     .then(json => renderCard(json));
     //.catch(error => alert(error.message));
-
-}
-
-function renderFilteredCards(json, filter, value) {
-  json.forEach(user => {
-      renderCard(user); 
-  })
-}
-
-function applyFilters() {
-
-}
-
-function setupGenderFilter() {
-  const genderOpts = document.getElementsByClassName('gender-filter');
-  genderOpts.forEach((opt) => {
-    opt.addEventListener("click", filterGender);
-  })
-}
-
-function filterGender() {
-  
 }
