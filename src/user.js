@@ -11,13 +11,14 @@ class User {
         this.id = userObj.id; 
         this.name = userObj.name; 
         this.gender = userObj.gender; 
-        // this.role = userObj.role; 
+        // todo: make roles an array to allow multiple roles 
+        this.role = userObj.role; 
         // this.image = userObj.image; 
         // this.side = userObj.side; 
         // this.weight = userObj.weight; 
         // this.ageClass = userObj.ageClass; 
         // this.timeTrial = userObj.timeTrial; 
-        // this.status = userObj.status; 
+        this.status = userObj.status; 
         // this.notes = userObj.notes; 
         // this.contactInfo = userObj.contactInfo; 
         this.renderCard(); 
@@ -28,17 +29,27 @@ class User {
     renderCard() {
         //const main = document.getElementById('roster');
         const user_id = this.id; 
+        console.log('user');
+        console.log(this);
     
         const rosterTable = document.getElementById('roster-table');
         const tableRow = document.createElement('tr');
         const tableData = document.createElement('td');
     
         const card = document.createElement('div'); 
+        card.classList.add('card');
         if (this.gender == 'male') {
-            card.className = 'card male'; 
+            card.classList.add('male');
         }
         else {
-            card.className = 'card female'; 
+            card.classList.add('female');
+        }
+
+        if (this.status == 'active') {
+            card.classList.add('active');
+        }
+        else {
+            card.classList.add('inactive');
         }
         
         card.id = `user_id-${user_id}`
@@ -47,8 +58,9 @@ class User {
         card.setAttribute('ondragstart', 'drag(event)');
     
         const userName = document.createElement('p'); 
-        userName.innerText = this.name; 
-    
+        userName.innerText = `${this.name} [${this.role[0]}]`; 
+
+        // put role in the card 
         const viewWosBtn = document.createElement('button'); 
         viewWosBtn.dataset.id = user_id; 
         viewWosBtn.innerText = 'View Workouts'; 
@@ -71,7 +83,6 @@ class User {
         users.forEach(user => {
             user.renderCard(); 
         })
-
     }
 
     static loadUsers() {
@@ -82,9 +93,51 @@ class User {
         }))
     }
 
-    static filterAttributes(user, attribute, value) {
-        return user[attribute] == value; 
+    static filterAttributes(user, attribute, values) {
+        return values.includes(user[attribute]); 
     }
+
+    static applyAllFilters() {
+        // reset inRoster array 
+        User.inRoster = User.all; 
+        const filterCategories = ['gender', 'status', 'role']; 
+        // const filterCategories = ['gender', 'status', 'role', 'age', 'weight', 'tt']; 
+        // const filterCategories = document.getElementsByClassName('filter');
+        filterCategories.forEach(function(category) {
+            console.log('category here1');
+            console.log(category);
+            const filters = document.getElementsByClassName(category); 
+            const count = filters.length; 
+            // get number of checked boxes 
+            const numChecked = $(`input.${category}:checked`).length;
+            console.log(numChecked);
+            // if all are checked or none are checked, do nothing
+            // else, apply the filters 
+            const values = []; 
+            if (numChecked > 0 && numChecked < count) {
+                Array.prototype.forEach.call(filters, function(el) {
+                    if (el.checked) {
+                        const value = el.id; 
+                        console.log('value here');
+                        console.log(value);
+                        values.push(value);
+                    }
+                })
+                User.filteredUsers(category, values);
+            }
+        })
+        // console.log('users in roster');
+        // console.log(User.inRoster);
+        User.renderCards(User.inRoster);
+    }
+
+    /*
+    filter logic idea: 
+    each time a checkbox state is changed, we go through and apply all filters 
+    join values in the same category with "or"
+    join values in different categories with "and"
+    if nothing is checked in a particular category, do not apply filters for that category 
+    */
 
     // when nothing is checked, we remove all filters for this category 
     // when we hit the corresponding 'clear-filter' button, we remove all filters for this category 
@@ -92,9 +145,8 @@ class User {
 
     }
 
-    static filteredUsers(attribute, value) {
-        const filteredUsers = User.inRoster.filter(user => User.filterAttributes(user, attribute, value)); 
-        User.renderCards(filteredUsers);
+    static filteredUsers(attribute, values) {
+        const filteredUsers = User.inRoster.filter(user => User.filterAttributes(user, attribute, values)); 
         User.inRoster = filteredUsers; 
         return filteredUsers; 
     }
@@ -108,33 +160,17 @@ function removeAllChildNodes(parent) {
 
 document.addEventListener("DOMContentLoaded", () => {
     User.loadUsers();  
-    const filterBtn = document.getElementById('filter-btn');
-    // filterBtn.addEventListener("click", function () { User.filteredUsers('gender', 'male') });
-    filterBtn.addEventListener("click", function () { 
-        console.log(this.id)
-        User.filteredUsers('gender', 'male');
-    });
+    // const filterBtn = document.getElementById('filter-btn');
+    // // filterBtn.addEventListener("click", function () { User.filteredUsers('gender', 'male') });
+    // filterBtn.addEventListener("click", function () { 
+    //     console.log(this.id)
+    //     User.filteredUsers('gender', 'male');
+    // });
     const filterChecks = document.getElementsByClassName('filter'); 
     Array.prototype.forEach.call(filterChecks, function(el) {
-        // Do stuff here
-        // console.log('hello');
-        // console.log(el);
-        el.addEventListener('change', function() {
-            if (this.checked) {
-                const attribute = this.className.split(' ').pop();
-                const value = this.id; 
-                console.log('value here');
-                console.log(value);
-                User.filteredUsers(attribute, value);
-            }
-            
-        });
-        
+        el.addEventListener('change', User.applyAllFilters);
     });
-
-
 
     const genderClear = document.getElementById('gender-clear');
     genderClear
-
 })
