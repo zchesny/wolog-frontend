@@ -1,18 +1,9 @@
-// test that we can get data from the backend
-// const BACKEND_URL = 'http://localhost:3000';
-// fetch(`${BACKEND_URL}/test`)
-//   .then(response => response.json())
-//   .then(parsedResponse => console.log(parsedResponse));
-
-  // first real data 
-// const BASE_URL = "http://localhost:3000"
-// const USERS_URL = `${BASE_URL}/users`
-// const WORKOUTS_URL = `${BASE_URL}/workouts`
-// const TEAMS_URL = `${BASE_URL}/teams`
+const BASE_URL = "http://localhost:3000"
+const USERS_URL = `${BASE_URL}/users`
+const LINEUPS_URL = `${BASE_URL}/lineups`
 
 // DOCUMENT FUNCTIONS ------------------------
 document.addEventListener("DOMContentLoaded", () => {
-    renderForm("new-user", newUser);
     renderForm("new-lineup");
 })
 
@@ -22,12 +13,13 @@ function renderForm(formName, newFunction) {
   const formContainer = document.querySelector(`#${formName}-form-container`);
   addBtn.addEventListener("click", () => {
     // hide & seek with the form
+    console.log('form hide and seek here');
     addUser = !addUser;
     if (addUser) {
       formContainer.style.display = "block";
-      console.log('newLineup clicked');
-      User.filteredUsers('status', ['active']);
-      User.renderCards(User.inRoster);
+      User.resetAndRenderRoster();
+      // User.filteredUsers('status', ['active']);
+      // User.renderCards(User.inRoster);
     } else {
       formContainer.style.display = "none";
     }
@@ -45,24 +37,39 @@ function renderForm(formName, newFunction) {
   }
 }
 
+function eventFire(el, etype) {
+  if (el.fireEvent) {
+    el.fireEvent('on' + etype);
+  } else {
+    var evObj = document.createEvent('Events');
+    evObj.initEvent(etype, true, false);
+    el.dispatchEvent(evObj);
+  }
+}
+
 function renderRoster() {
   rosterTable = document.getElementById('roster-table');
 }
 
+function removeAllChildNodes(parent) {
+  while (parent.firstChild) {
+      parent.removeChild(parent.firstChild);
+  }
+}
+
 function renderBoatForm(event) {
-  const count = event.target.value;
-  console.log(count);
-  let newLineup = document.getElementById('current-new-lineup');
-  // future: add logic to just add the number of cells needed instead of creating a new table 
+  const capacity = event.target.value;
+  let newLineup = document.getElementById('lineup-table-new');
+  // todo: add logic to just add the number of cells needed instead of creating a new table 
   if (newLineup) {
     newLineup.remove(); 
   }
   const form = document.querySelector('#new-lineup-form'); 
   const table = document.createElement('table'); 
-  table.id = "current-new-lineup"
+  table.id = "lineup-table-new"
   form.appendChild(table);
-  if (count >= 10) {
-    for (let i = 0; i < count/2; i++) {
+  if (capacity >= 10) {
+    for (let i = 0; i < capacity/2; i++) {
       const row = document.createElement('tr');
       let data = createPaddlerEntry(); 
       let data2 = createPaddlerEntry(); 
@@ -72,7 +79,7 @@ function renderBoatForm(event) {
     }
   }
   else {
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < capacity; i++) {
       const row = document.createElement('tr');
       let data = createPaddlerEntry(); 
       row.appendChild(data);
@@ -81,12 +88,22 @@ function renderBoatForm(event) {
   }
 }
 
-function createPaddlerEntry() {
+// FIXME: find lineup id
+function createPaddlerEntry(user_id, data_id ) {
   let data = document.createElement('td');
+  if (data_id) {
+    data.id = data_id; 
+  }
   data.innerHTML = "paddler holder"; 
   data.setAttribute('ondrop', 'drop(event)'); 
   data.setAttribute('ondragover', 'allowDrop(event)');
   data.setAttribute('containsdrop', false);
+  if (user_id) {
+    const user = User.findById(user_id);
+    console.log(`lineup id check here ${data_id}`);
+    const card = user.renderCard(true, data_id); 
+    data.appendChild(card); 
+  }
   return data;
 }
 
@@ -110,51 +127,4 @@ function drop(event) {
     event.target.appendChild(document.getElementById(data)); 
     dropTarget.setAttribute('containsdrop', true);
   } 
-}
-
-// USER FUNCTIONS --------------------------
-function newUser(event) {
-  event.preventDefault(); 
-  // gather form data
-  const name = document.getElementById('user-name').value; 
-  const password = document.getElementById('user-password').value; 
-  const image = document.getElementById('user-image').value; 
-
-  console.log('user data from form'); 
-  console.log(name);
-  console.log(password); 
-  console.log(image); 
-
-  // clear form
-  document.getElementById('user-name').value = ''; 
-  document.getElementById('user-password').value = ''; 
-  document.getElementById('user-image').value = ''; 
-
-  let userData = {
-    "user": {
-      name, 
-      password, 
-      image
-    }
-  };
-
-  console.log('user data json'); 
-  console.log(userData); 
-
-  let configObj = {
-    method: "POST", 
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    }, 
-    body: JSON.stringify(userData)
-  };
-
-  console.log('config object'); 
-  console.log(configObj); 
-
-  return fetch(USERS_URL, configObj)
-    .then(resp => resp.json())
-    .then(json => renderCard(json));
-    //.catch(error => alert(error.message));
 }

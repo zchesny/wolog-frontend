@@ -103,17 +103,15 @@
           </div>
           <div class="grandchild-container" id = "roster">
             <h2>Roster</h2>
-            <button id='filter-btn'>Filter</button>
-            <button id='filter-btn2'>Filter2</button>
             <table id="roster-table">
             </table>
           </div>
           <div class="grandchild-container" id = "roster-filter">
-<!-- gender, age, weight, TT, role, status// show hide filters -->
-<!-- add a clear selections option  -->
+                <!-- gender, age, weight, TT, role, status// show hide filters -->
+                <!-- add a clear selections option  -->
             <form id="filter-roster">
               <h2>Filters</h2>
-              <p># of Lineups</p>
+              <!-- <p># of Lineups</p> -->
 
               <p>Gender</p>
               
@@ -144,7 +142,7 @@
               <input type="checkbox" id="drummer" name="inactive" class="filter role">
               <label for="drummer">Drummer</label>
 
-              <p>Age Class</p>
+              <!-- <p>Age Class</p>
               
               <input type="checkbox" id="u16" name="u16">
               <label for="u16">U16</label>
@@ -203,7 +201,7 @@
                 placeholder='>'
                 id = "tt-lower"
                 class="input-text"
-              />
+              /> -->
 
 
               <br>
@@ -220,22 +218,17 @@
       </div>
 
       <main>
-        <table>
-          <tr>row</tr>
-          <tr><td>data</td></tr>
-          <tr><td>data</td></tr>
-          <tr><td>data</td></tr>
-          <td>datadata</td>
-          <td>datadata</td>
-        </table>
+        <div id='lineup-container'>
 
+        </div>
       </main>
 
       
   
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script type="application/javascript" src="src/user.js" charset="UTF-8"></script>
     <script type="application/javascript" src="src/index.js" charset="UTF-8"></script>
+    <script type="application/javascript" src="src/user.js" charset="UTF-8"></script>
+    <script type="application/javascript" src="src/lineup.js" charset="UTF-8"></script>
     <!-- <script type="application/javascript" src="src/user.js" charset="UTF-8"></script> -->
   </body>
 </html>

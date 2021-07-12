@@ -1,9 +1,5 @@
-const BASE_URL = "http://localhost:3000"
-const USERS_URL = `${BASE_URL}/users`
-const WORKOUTS_URL = `${BASE_URL}/workouts`
-const TEAMS_URL = `${BASE_URL}/teams`
-
 class User {
+    // todo: sort alphabetically by first name 
     static all = []; 
     static inRoster = [];
 
@@ -26,10 +22,14 @@ class User {
         User.inRoster.push(this);
     }
 
-    renderCard() {
+    // if optional argument of lineup is passed, render the card in the given lineup 
+    renderCard(lineup, lineupId) {
         //const main = document.getElementById('roster');
         const user_id = this.id; 
-        const rosterTable = document.getElementById('roster-table');
+        if (!lineup) {
+            const rosterTable = document.getElementById('roster-table');
+        }
+        
         const tableRow = document.createElement('tr');
         const tableData = document.createElement('td');
     
@@ -49,7 +49,8 @@ class User {
             card.classList.add('inactive');
         }
         
-        card.id = `user_id-${user_id}`
+        card.id = `lineup_id-${lineupId}-user_id-${user_id}`
+        // FIXME make a different id for user cards in rosters 
         card.dataset.id = user_id; 
         card.setAttribute('draggable', true);
         card.setAttribute('ondragstart', 'drag(event)');
@@ -61,7 +62,8 @@ class User {
         const viewWosBtn = document.createElement('button'); 
         viewWosBtn.dataset.id = user_id; 
         viewWosBtn.innerText = 'View Workouts'; 
-    
+        
+        // append children 
         rosterTable.appendChild(tableRow);
         tableRow.appendChild(tableData);
         tableData.appendChild(card);
@@ -69,12 +71,59 @@ class User {
         tableData.setAttribute('ondrop', 'drop(event)'); 
         tableData.setAttribute('ondragover', 'allowDrop(event)');
         tableData.setAttribute('containsdrop', true);
-        // main.appendChild(card); 
         card.appendChild(userName); 
+
+        return card; 
+    }
+    
+    static createUser(event) {
+        event.preventDefault(); 
+        // gather form data
+        const name = document.getElementById('user-name').value; 
+        const password = document.getElementById('user-password').value; 
+        const image = document.getElementById('user-image').value; 
+      
+        console.log('user data from form'); 
+        console.log(name);
+        console.log(password); 
+        console.log(image); 
+      
+        // clear form
+        document.getElementById('user-name').value = ''; 
+        document.getElementById('user-password').value = ''; 
+        document.getElementById('user-image').value = ''; 
+      
+        let userData = {
+          "user": {
+            name, 
+            password, 
+            image
+          }
+        };
+      
+        console.log('user data json'); 
+        console.log(userData); 
+      
+        let configObj = {
+          method: "POST", 
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          }, 
+          body: JSON.stringify(userData)
+        };
+      
+        console.log('config object'); 
+        console.log(configObj); 
+      
+        return fetch(USERS_URL, configObj)
+          .then(resp => resp.json())
+          .then(json => console.log(json));
+          //.catch(error => alert(error.message));
     }
 
     static findById(userId) {
-        return User.all.filter(user => user.id == userId );
+        return User.all.find(user => user.id == userId);
     }
 
     static renderCards(users) {
@@ -83,7 +132,7 @@ class User {
         const rosterTable = document.getElementById('roster-table');
         removeAllChildNodes(rosterTable); 
         users.forEach(user => {
-            user.renderCard(); 
+            user.renderCard(true, 'roster'); 
         })
     }
 
@@ -141,6 +190,15 @@ class User {
 
     }
 
+    static resetAndRenderRoster() {
+        User.inRoster = User.all; 
+        User.filteredUsers('status', ['active']);
+        User.renderCards(User.inRoster);
+        const activeFilter = document.getElementById('active');
+        activeFilter.setAttribute('checked', true);
+        console.log('roster was reset');
+    }
+
     static filteredUsers(attribute, values) {
         const filteredUsers = User.inRoster.filter(user => User.filterAttributes(user, attribute, values)); 
         User.inRoster = filteredUsers; 
@@ -148,21 +206,15 @@ class User {
     }
 }
 
-function removeAllChildNodes(parent) {
-    while (parent.firstChild) {
-        parent.removeChild(parent.firstChild);
-    }
-}
-
 document.addEventListener("DOMContentLoaded", () => {
-    User.loadUsers();  
+    User.loadUsers();
+    renderForm("new-user", User.createUser);
+
     const filterChecks = document.getElementsByClassName('filter'); 
     Array.prototype.forEach.call(filterChecks, function(el) {
         el.addEventListener('change', User.applyAllFilters);
     });
-    const activeFilter = document.getElementById('active');
-    activeFilter.setAttribute('checked', true);
 
-    const genderClear = document.getElementById('gender-clear');
-    genderClear
+    // const genderClear = document.getElementById('gender-clear');
+    // genderClear
 })

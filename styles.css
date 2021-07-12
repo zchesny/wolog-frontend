@@ -14,22 +14,27 @@ body {
     margin: 0;
   }
   
-  main {
+  /* main {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto;
     grid-gap: 20px;
     padding-top: 10px;
     padding-bottom: 30px;
-  }
+  } */
   
   div.card {
     background-color: #eeeeee;
     height: 50px;
-    width: 200px;
-    box-shadow: 10px 10px;
+    width: fit-content;
+    /* box-shadow: 10px 10px; */
     padding: 10px;
     border-radius: 10px;
+    /* trying to shrink it */
+    overflow: hidden;
+    position: relative;
+    display: inline-block;
+    overflow-y:scroll;
   }
 
   div.male {
@@ -41,13 +46,46 @@ body {
   }
 
   div.active {
-    box-shadow: 10px 10px #34C63B;
+    /* box-shadow: 10px 10px #34C63B; */
     border: 5px solid #3BE743;
   }
 
   div.inactive {
-    box-shadow: 10px 10px #D90404;
+    /* box-shadow: 10px 10px #D90404; */
     border: 5px solid #FF0000;
+  }
+
+  div.lineup {
+    /* from toy story one */
+    text-align: center;
+    border: grey solid 1px;
+    padding: 1rem;
+    width: 15rem;
+    height: 25rem;
+    display: inline-grid;
+    margin: 1rem 2rem;
+    box-shadow: 3px 4px #e04b52;
+    /* new things to try */
+    /* display: flex;
+    flex-direction: column; 
+    overflow: hidden; */
+  }
+
+  div.lineup p {
+    margin: 0; 
+  }
+
+  div.lineup h2 {
+    margin: 0; 
+  }
+
+  div.lineup-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    grid-gap: 20px;
+    padding-top: 10px;
+    padding-bottom: 30px;
   }
   
   p {
@@ -157,6 +195,12 @@ body {
     border-collapse: collapse;
   }
 
+  .card-table {
+    table-layout:fixed;
+    max-width: 400px;
+    width: 100% !important;
+  }
+
   th, td { 
     padding: 10px;
   }
@@ -168,7 +212,7 @@ body {
 
   #roster-table{
     overflow-y:scroll;
-    height:700px;
+    height:500px;
     display:block;
  }
   
